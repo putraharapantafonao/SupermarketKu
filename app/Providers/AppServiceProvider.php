@@ -19,6 +19,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Memastikan asset publik dibaca dengan benar di dalam environment Vercel
+        if (env('VERCEL_JOB') || isset($_ENV['VERCEL'])) {
+            $this->app->bind('path.public', function () {
+                return base_path('public');
+            });
+        }
     }
 }

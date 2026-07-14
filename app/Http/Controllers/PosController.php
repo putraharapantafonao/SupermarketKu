@@ -4,31 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Helpers\PromoHelper;
 use App\Models\Customer;
-use App\Models\Payment;
 use App\Models\Product;
-use App\Models\StockMovement;
-use App\Models\Transaction;
-use App\Models\TransactionDetail;
+use App\Services\TransactionService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class PosController extends Controller
 {
     public function index(Request $request)
     {
         $products = Product::where('stock', '>', 0)
-            ->when($request->search, function ($query) use ($request) {
-                $query->where(function ($q) use ($request) {
-                    $q->where('name', 'like', '%' . $request->search . '%')
-                        ->orWhere('barcode', 'like', '%' . $request->search . '%');
-                });
+            ->when($request->filled('search') && strlen($request->search) >= 3, function ($query) use ($request) {
+                $query->whereFullText(['name', 'barcode'], $request->search, ['mode' => 'BOOLEAN']);
             })
             ->latest()
             ->get();
 
         $cart = session()->get('cart', []);
 
-        return view('pos.index', compact('products', 'cart'));
+        $customers = Customer::orderBy('name')->get();
+
+        return view('pos.index', compact('products', 'cart', 'customers'));
     }
 
     private function addProductToCart(Product $product)
@@ -147,7 +142,7 @@ class PosController extends Controller
     public function decreaseQuantity(Request $request)
     {
         $request->validate([
-            'product_id' => 'required',
+            'product_id' => 'required|exists:products,id',
         ]);
 
         $cart = session()->get('cart', []);
@@ -175,7 +170,7 @@ class PosController extends Controller
     public function removeFromCart(Request $request)
     {
         $request->validate([
-            'product_id' => 'required',
+            'product_id' => 'required|exists:products,id',
         ]);
 
         $cart = session()->get('cart', []);
@@ -212,101 +207,41 @@ class PosController extends Controller
 
     public function processCheckout(Request $request)
     {
+        $cart = session()->get('cart', []);
+
+        $cartTotal = collect($cart)->sum('subtotal');
+
         $request->validate([
             'customer_id' => 'nullable|exists:customers,id',
             'method' => 'required|in:cash,qris,transfer,ewallet,debit',
             'paid_amount' => 'nullable|integer|min:0',
-            'discount' => 'nullable|integer|min:0',
+            'discount' => 'nullable|numeric|min:0|max:' . $cartTotal,
+            'tax' => 'nullable|numeric|min:0|max:' . $cartTotal,
             'card_bank' => 'nullable|string',
             'trace_number' => 'nullable|string',
         ]);
 
-        $cart = session()->get('cart', []);
-
-        if (empty($cart)) {
-            return redirect()->route('pos.index')
-                ->with('error', 'Keranjang masih kosong.');
-        }
-
-        $total = collect($cart)->sum('subtotal');
-        $discount = $request->discount ?? 0;
-        $tax = 0;
-        $grandTotal = max($total - $discount + $tax, 0);
-
-        if ($discount > $total) {
-            return back()->with('error', 'Diskon tidak boleh lebih besar dari total belanja.');
-        }
-
-        //  KODE PERBAIKAN AMAN:
-$paidAmount = $request->method === 'cash'
-    ? ($request->filled('paid_amount') ? $request->paid_amount : $grandTotal)
-    : $grandTotal;
-        if ($request->method === 'cash' && $paidAmount < $grandTotal) {
-            return back()->with('error', 'Uang tunai kurang.');
-        }
-
         try {
-            $transactionId = null;
+            $transaction = TransactionService::processCheckout($cart, [
+                'customer_id' => $request->customer_id,
+                'method' => $request->method,
+                'paid_amount' => $request->paid_amount,
+                'discount' => $request->discount ?? 0,
+                'tax' => 0,
+                'card_bank' => $request->card_bank,
+                'trace_number' => $request->trace_number,
+            ]);
 
-            // FIX PARSEERROR: Mengganti '[' menjadi '{' yang valid untuk block closure PHP
-            DB::transaction(function () use ($request, $cart, $total, $discount, $tax, $grandTotal, $paidAmount, &$transactionId) {
+            session()->forget('cart');
 
-                $transaction = Transaction::create([
-                    'invoice_number' => 'INV-' . date('YmdHis') . '-' . str_pad(Transaction::count() + 1, 4, '0', STR_PAD_LEFT),
-                    'user_id' => auth()->id(),
-                    'customer_id' => $request->customer_id,
-                    'total_price' => $total,
-                    'discount' => $discount,
-                    'tax' => $tax,
-                    'grand_total' => $grandTotal,
-                ]);
-
-                $transactionId = $transaction->id;
-
-                foreach ($cart as $item) {
-                    $product = Product::findOrFail($item['id']);
-
-                    if ($product->stock < $item['quantity']) {
-                        throw new \Exception('Stok produk ' . $product->name . ' tidak cukup.');
-                    }
-
-                    TransactionDetail::create([
-                        'transaction_id' => $transaction->id,
-                        'product_id' => $product->id,
-                        'quantity' => $item['quantity'],
-                        'price' => $item['price'],
-                        'subtotal' => $item['subtotal'],
-                    ]);
-
-                    $product->decrement('stock', $item['quantity']);
-
-                    StockMovement::create([
-                        'product_id' => $product->id,
-                        'type' => 'out',
-                        'quantity' => $item['quantity'],
-                        'description' => 'Penjualan invoice ' . $transaction->invoice_number,
-                    ]);
-                }
-
-                Payment::create([
-                    'transaction_id' => $transaction->id,
-                    'method' => $request->method,
-                    'paid_amount' => $paidAmount,
-                    'change_amount' => $request->method === 'cash' ? ($paidAmount - $grandTotal) : 0,
-                    'card_bank' => $request->card_bank,
-                    'trace_number' => $request->trace_number,
-                ]);
-
-                session()->forget('cart');
-            });
-
-            return redirect()->route('transactions.show', $transactionId)
+            return redirect()->route('transactions.show', $transaction->id)
                 ->with('success', 'Transaksi berhasil disimpan.')
                 ->with('print_on_load', true);
 
         } catch (\Exception $e) {
+            \Log::error('POS checkout error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return redirect()->route('pos.index')
-                ->with('error', $e->getMessage());
+                ->with('error', 'Terjadi kesalahan sistem. Silakan hubungi administrator.');
         }
     }
 }

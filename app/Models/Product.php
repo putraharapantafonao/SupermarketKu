@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
+    use HasFactory, SoftDeletes;
     protected $fillable = [
     'category_id',
     'supplier_id',
@@ -18,6 +21,17 @@ class Product extends Model
     'expired_date',
     'image',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'purchase_price' => 'integer',
+            'selling_price' => 'integer',
+            'stock' => 'integer',
+            'minimum_stock' => 'integer',
+            'expired_date' => 'date',
+        ];
+    }
 
     public function category()
     {
@@ -47,5 +61,23 @@ class Product extends Model
     public function promotions()
     {
         return $this->hasMany(Promotion::class);
+    }
+
+    public function scopeLowStock($query)
+    {
+        return $query->whereColumn('stock', '<=', 'minimum_stock');
+    }
+
+    public function scopeExpired($query)
+    {
+        return $query->whereNotNull('expired_date')
+            ->whereDate('expired_date', '<=', now());
+    }
+
+    public function scopeAlmostExpired($query, int $days = 30)
+    {
+        return $query->whereNotNull('expired_date')
+            ->whereDate('expired_date', '>', now())
+            ->whereDate('expired_date', '<=', now()->addDays($days));
     }
 }

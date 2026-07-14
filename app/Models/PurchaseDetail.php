@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class PurchaseDetail extends Model
 {
+    use HasFactory;
     protected $fillable = [
     'purchase_id',
     'product_id',
@@ -13,6 +15,15 @@ class PurchaseDetail extends Model
     'purchase_price',
     'subtotal',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'quantity' => 'integer',
+            'purchase_price' => 'integer',
+            'subtotal' => 'integer',
+        ];
+    }
 
     public function purchase()
     {

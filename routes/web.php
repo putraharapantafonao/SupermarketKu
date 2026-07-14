@@ -46,79 +46,89 @@ Route::middleware(['auth'])->group(function () {
     | Master Data
     |--------------------------------------------------------------------------
     |*/
-    Route::resource('categories', CategoryController::class);
-    Route::resource('products', ProductController::class);
-    Route::resource('suppliers', SupplierController::class);
-    Route::resource('customers', CustomerController::class);
+    Route::resource('categories', CategoryController::class)
+        ->middleware('role:Owner,Admin,Gudang');
+    Route::resource('products', ProductController::class)
+        ->middleware('role:Owner,Admin,Gudang');
+    Route::resource('suppliers', SupplierController::class)
+        ->middleware('role:Owner,Admin,Gudang');
+    Route::resource('customers', CustomerController::class)
+        ->middleware('role:Owner,Admin,Kasir');
 
-    /*
-    |--------------------------------------------------------------------------
-    | POS / Kasir
-    |--------------------------------------------------------------------------
-    |*/
-    Route::get('/pos', [PosController::class, 'index'])
-        ->name('pos.index');
+    Route::middleware('role:Owner,Admin,Kasir')->group(function () {
+        /*
+        |--------------------------------------------------------------------------
+        | POS / Kasir
+        |--------------------------------------------------------------------------
+        |*/
+        Route::get('/pos', [PosController::class, 'index'])
+            ->name('pos.index');
 
-    Route::post('/pos/add', [PosController::class, 'addToCart'])
-        ->name('pos.add');
+        Route::post('/pos/add', [PosController::class, 'addToCart'])
+            ->name('pos.add');
 
-    Route::post('/pos/remove', [PosController::class, 'removeFromCart'])
-        ->name('pos.remove');
+        Route::post('/pos/remove', [PosController::class, 'removeFromCart'])
+            ->name('pos.remove');
 
-    Route::post('/pos/increase', [PosController::class, 'increaseQuantity'])
-        ->name('pos.increase');
+        Route::post('/pos/increase', [PosController::class, 'increaseQuantity'])
+            ->name('pos.increase');
 
-    Route::post('/pos/decrease', [PosController::class, 'decreaseQuantity'])
-        ->name('pos.decrease');
+        Route::post('/pos/decrease', [PosController::class, 'decreaseQuantity'])
+            ->name('pos.decrease');
 
-    Route::post('/pos/clear', [PosController::class, 'clearCart'])
-        ->name('pos.clear');
+        Route::post('/pos/clear', [PosController::class, 'clearCart'])
+            ->name('pos.clear');
 
-    Route::post('/pos/scan', [PosController::class, 'scanBarcode'])
-        ->name('pos.scan');
+        Route::post('/pos/scan', [PosController::class, 'scanBarcode'])
+            ->name('pos.scan');
 
-    /*
-    |--------------------------------------------------------------------------
-    | Checkout
-    |--------------------------------------------------------------------------
-    |*/
-    Route::get('/pos/checkout', [PosController::class, 'checkout'])
-        ->name('pos.checkout');
+        /*
+        |--------------------------------------------------------------------------
+        | Checkout
+        |--------------------------------------------------------------------------
+        |*/
+        Route::get('/pos/checkout', [PosController::class, 'checkout'])
+            ->name('pos.checkout');
 
-    Route::post('/pos/checkout', [PosController::class, 'processCheckout'])
-        ->name('pos.processCheckout');
+        Route::post('/pos/checkout', [PosController::class, 'processCheckout'])
+            ->name('pos.processCheckout');
+    });
 
-    /*
-    |--------------------------------------------------------------------------
-    | Transaksi
-    |--------------------------------------------------------------------------
-    |*/
-    Route::get('/transactions', [TransactionController::class, 'index'])
-        ->name('transactions.index');
+    Route::middleware('role:Owner,Admin,Kasir')->group(function () {
+        /*
+        |--------------------------------------------------------------------------
+        | Transaksi
+        |--------------------------------------------------------------------------
+        |*/
+        Route::get('/transactions', [TransactionController::class, 'index'])
+            ->name('transactions.index');
 
-    // SOLUSI ERROR: Menambahkan handler POST untuk memproses simpan checkout POS ke database
-    Route::post('/transactions', [TransactionController::class, 'store'])
-        ->name('transactions.store');
+        // SOLUSI ERROR: Menambahkan handler POST untuk memproses simpan checkout POS ke database
+        Route::post('/transactions', [TransactionController::class, 'store'])
+            ->name('transactions.store');
 
-    Route::get('/transactions/{transaction}', [TransactionController::class, 'show'])
-        ->name('transactions.show');
+        Route::get('/transactions/{transaction}', [TransactionController::class, 'show'])
+            ->name('transactions.show');
 
-    Route::get('/transactions/{transaction}/receipt', [TransactionController::class, 'receipt'])
-        ->name('transactions.receipt');
+        Route::get('/transactions/{transaction}/receipt', [TransactionController::class, 'receipt'])
+            ->name('transactions.receipt');
+    });
 
-    /*
-    |--------------------------------------------------------------------------
-    | Reports
-    |--------------------------------------------------------------------------
-    |*/
-    Route::get('/reports/sales', [ReportController::class, 'sales'])
-        ->name('reports.sales');
+    Route::middleware('role:Owner,Admin')->group(function () {
+        /*
+        |--------------------------------------------------------------------------
+        | Reports
+        |--------------------------------------------------------------------------
+        |*/
+        Route::get('/reports/sales', [ReportController::class, 'sales'])
+            ->name('reports.sales');
 
-    Route::get('/reports/sales/pdf', [ReportController::class, 'salesPdf'])
-        ->name('reports.sales.pdf');
+        Route::get('/reports/sales/pdf', [ReportController::class, 'salesPdf'])
+            ->name('reports.sales.pdf');
 
-    Route::get('/reports/sales/excel', [ReportController::class, 'salesExcel'])
-        ->name('reports.sales.excel');
+        Route::get('/reports/sales/excel', [ReportController::class, 'salesExcel'])
+            ->name('reports.sales.excel');
+    });
 });
 
 /*

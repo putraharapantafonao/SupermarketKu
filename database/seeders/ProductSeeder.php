@@ -2,59 +2,391 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Supplier;
+use Illuminate\Database\Seeder;
 
 class ProductSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+    protected array $products = [
+        // === Makanan ===
+        [
+            'category'      => 'Makanan',
+            'supplier'      => 'PT Indofood Sukses Makmur',
+            'barcode'       => '8991000100011',
+            'name'          => 'Indomie Goreng',
+            'purchase_price'=> 2500,
+            'selling_price' => 3500,
+            'stock'         => 120,
+            'minimum_stock' => 20,
+            'expired_date'  => '2027-12-31',
+        ],
+        [
+            'category'      => 'Makanan',
+            'supplier'      => 'PT Indofood Sukses Makmur',
+            'barcode'       => '8991000100012',
+            'name'          => 'Indomie Kuah Soto',
+            'purchase_price'=> 2500,
+            'selling_price' => 3500,
+            'stock'         => 100,
+            'minimum_stock' => 20,
+            'expired_date'  => '2027-11-30',
+        ],
+        [
+            'category'      => 'Makanan',
+            'supplier'      => 'PT Mayora Indah Tbk',
+            'barcode'       => '8991000100021',
+            'name'          => 'Beng Beng Original',
+            'purchase_price'=> 2800,
+            'selling_price' => 4000,
+            'stock'         => 80,
+            'minimum_stock' => 15,
+            'expired_date'  => '2027-10-15',
+        ],
+        [
+            'category'      => 'Makanan',
+            'supplier'      => 'PT Mayora Indah Tbk',
+            'barcode'       => '8991000100022',
+            'name'          => 'Biskuat',
+            'purchase_price'=> 1500,
+            'selling_price' => 2500,
+            'stock'         => 60,
+            'minimum_stock' => 15,
+            'expired_date'  => '2027-09-20',
+        ],
+        [
+            'category'      => 'Makanan',
+            'supplier'      => 'CV Sinar Mulia Trading',
+            'barcode'       => '8991000100031',
+            'name'          => 'Chitato Lite Sapi Panggang',
+            'purchase_price'=> 9000,
+            'selling_price' => 12500,
+            'stock'         => 45,
+            'minimum_stock' => 10,
+            'expired_date'  => '2027-08-30',
+        ],
+        [
+            'category'      => 'Makanan',
+            'supplier'      => 'CV Sinar Mulia Trading',
+            'barcode'       => '8991000100032',
+            'name'          => 'Qtela Singkong Balado',
+            'purchase_price'=> 6500,
+            'selling_price' => 9000,
+            'stock'         => 50,
+            'minimum_stock' => 10,
+            'expired_date'  => '2027-11-01',
+        ],
+        [
+            'category'      => 'Makanan',
+            'supplier'      => 'PT Indofood Sukses Makmur',
+            'barcode'       => '8991000100041',
+            'name'          => 'Pop Mie Kuah',
+            'purchase_price'=> 4000,
+            'selling_price' => 5500,
+            'stock'         => 70,
+            'minimum_stock' => 15,
+            'expired_date'  => '2027-12-01',
+        ],
+        [
+            'category'      => 'Makanan',
+            'supplier'      => 'PT Mayora Indah Tbk',
+            'barcode'       => '8991000100051',
+            'name'          => 'Silverqueen Cashew',
+            'purchase_price'=> 14000,
+            'selling_price' => 18000,
+            'stock'         => 30,
+            'minimum_stock' => 8,
+            'expired_date'  => '2027-07-15',
+        ],
+
+        // === Minuman ===
+        [
+            'category'      => 'Minuman',
+            'supplier'      => 'CV Sinar Mulia Trading',
+            'barcode'       => '8991000200011',
+            'name'          => 'Aqua Botol 600ml',
+            'purchase_price'=> 3000,
+            'selling_price' => 4000,
+            'stock'         => 150,
+            'minimum_stock' => 30,
+            'expired_date'  => '2028-01-01',
+        ],
+        [
+            'category'      => 'Minuman',
+            'supplier'      => 'CV Sinar Mulia Trading',
+            'barcode'       => '8991000200012',
+            'name'          => 'Aqua Gelas 220ml',
+            'purchase_price'=> 800,
+            'selling_price' => 1500,
+            'stock'         => 200,
+            'minimum_stock' => 40,
+            'expired_date'  => '2028-01-01',
+        ],
+        [
+            'category'      => 'Minuman',
+            'supplier'      => 'PT Indofood Sukses Makmur',
+            'barcode'       => '8991000200021',
+            'name'          => 'Teh Botol Sosro 450ml',
+            'purchase_price'=> 4000,
+            'selling_price' => 5500,
+            'stock'         => 90,
+            'minimum_stock' => 20,
+            'expired_date'  => '2028-02-01',
+        ],
+        [
+            'category'      => 'Minuman',
+            'supplier'      => 'PT Mayora Indah Tbk',
+            'barcode'       => '8991000200031',
+            'name'          => 'Kopi ABC Sachet',
+            'purchase_price'=> 2000,
+            'selling_price' => 3500,
+            'stock'         => 180,
+            'minimum_stock' => 30,
+            'expired_date'  => '2027-09-30',
+        ],
+        [
+            'category'      => 'Minuman',
+            'supplier'      => 'PT Mayora Indah Tbk',
+            'barcode'       => '8991000200041',
+            'name'          => 'Floridina Orange 350ml',
+            'purchase_price'=> 3500,
+            'selling_price' => 5000,
+            'stock'         => 60,
+            'minimum_stock' => 15,
+            'expired_date'  => '2028-03-01',
+        ],
+
+        // === Sembako ===
+        [
+            'category'      => 'Sembako',
+            'supplier'      => 'PT Sumber Rezeki Distribution',
+            'barcode'       => '8991000300011',
+            'name'          => 'Beras Ramos 5Kg',
+            'purchase_price'=> 65000,
+            'selling_price' => 75000,
+            'stock'         => 40,
+            'minimum_stock' => 10,
+            'expired_date'  => '2027-06-30',
+        ],
+        [
+            'category'      => 'Sembako',
+            'supplier'      => 'PT Sumber Rezeki Distribution',
+            'barcode'       => '8991000300021',
+            'name'          => 'Minyak Goreng Bimoli 2L',
+            'purchase_price'=> 28000,
+            'selling_price' => 35000,
+            'stock'         => 50,
+            'minimum_stock' => 15,
+            'expired_date'  => '2027-12-15',
+        ],
+        [
+            'category'      => 'Sembako',
+            'supplier'      => 'PT Sumber Rezeki Distribution',
+            'barcode'       => '8991000300022',
+            'name'          => 'Gula Pasir Gulaku 1Kg',
+            'purchase_price'=> 14000,
+            'selling_price' => 18000,
+            'stock'         => 60,
+            'minimum_stock' => 15,
+            'expired_date'  => '2028-01-01',
+        ],
+        [
+            'category'      => 'Sembako',
+            'supplier'      => 'CV Maju Jaya Sentosa',
+            'barcode'       => '8991000300031',
+            'name'          => 'Telur Ayam 1Kg',
+            'purchase_price'=> 22000,
+            'selling_price' => 28000,
+            'stock'         => 35,
+            'minimum_stock' => 10,
+            'expired_date'  => '2027-07-20',
+        ],
+        [
+            'category'      => 'Sembako',
+            'supplier'      => 'CV Maju Jaya Sentosa',
+            'barcode'       => '8991000300032',
+            'name'          => 'Gas Elpiji 3Kg',
+            'purchase_price'=> 18000,
+            'selling_price' => 20000,
+            'stock'         => 25,
+            'minimum_stock' => 5,
+            'expired_date'  => null,
+        ],
+
+        // === Bumbu Masakan ===
+        [
+            'category'      => 'Bumbu Masakan',
+            'supplier'      => 'PT Indofood Sukses Makmur',
+            'barcode'       => '8991000400011',
+            'name'          => 'Royco Ayam Sachet',
+            'purchase_price'=> 1200,
+            'selling_price' => 2000,
+            'stock'         => 200,
+            'minimum_stock' => 30,
+            'expired_date'  => '2028-02-01',
+        ],
+        [
+            'category'      => 'Bumbu Masakan',
+            'supplier'      => 'PT Indofood Sukses Makmur',
+            'barcode'       => '8991000400012',
+            'name'          => 'Saori Saus Tiram',
+            'purchase_price'=> 2500,
+            'selling_price' => 3800,
+            'stock'         => 80,
+            'minimum_stock' => 15,
+            'expired_date'  => '2027-11-30',
+        ],
+        [
+            'category'      => 'Bumbu Masakan',
+            'supplier'      => 'CV Maju Jaya Sentosa',
+            'barcode'       => '8991000400021',
+            'name'          => 'Kecap Bango 275ml',
+            'purchase_price'=> 12000,
+            'selling_price' => 15500,
+            'stock'         => 45,
+            'minimum_stock' => 10,
+            'expired_date'  => '2028-01-15',
+        ],
+        [
+            'category'      => 'Bumbu Masakan',
+            'supplier'      => 'CV Maju Jaya Sentosa',
+            'barcode'       => '8991000400031',
+            'name'          => 'Saus Sambal ABC 600ml',
+            'purchase_price'=> 15000,
+            'selling_price' => 19000,
+            'stock'         => 35,
+            'minimum_stock' => 8,
+            'expired_date'  => '2027-10-31',
+        ],
+
+        // === Peralatan Rumah Tangga ===
+        [
+            'category'      => 'Peralatan Rumah Tangga',
+            'supplier'      => 'CV Sinar Mulia Trading',
+            'barcode'       => '8991000500011',
+            'name'          => 'Rinso Anti Noda 800g',
+            'purchase_price'=> 9500,
+            'selling_price' => 12500,
+            'stock'         => 40,
+            'minimum_stock' => 10,
+            'expired_date'  => '2028-06-01',
+        ],
+        [
+            'category'      => 'Peralatan Rumah Tangga',
+            'supplier'      => 'CV Sinar Mulia Trading',
+            'barcode'       => '8991000500012',
+            'name'          => 'Sunlight Jeruk Nipis 800ml',
+            'purchase_price'=> 6000,
+            'selling_price' => 8500,
+            'stock'         => 55,
+            'minimum_stock' => 12,
+            'expired_date'  => '2028-05-01',
+        ],
+        [
+            'category'      => 'Peralatan Rumah Tangga',
+            'supplier'      => 'CV Sinar Mulia Trading',
+            'barcode'       => '8991000500021',
+            'name'          => 'Tisu Paseo 250 Lembar',
+            'purchase_price'=> 8000,
+            'selling_price' => 11000,
+            'stock'         => 70,
+            'minimum_stock' => 15,
+            'expired_date'  => '2028-08-01',
+        ],
+
+        // === Produk Bayi ===
+        [
+            'category'      => 'Produk Bayi',
+            'supplier'      => 'CV Sinar Mulia Trading',
+            'barcode'       => '8991000600011',
+            'name'          => 'MamyPoko Popok S30',
+            'purchase_price'=> 35000,
+            'selling_price' => 42000,
+            'stock'         => 25,
+            'minimum_stock' => 5,
+            'expired_date'  => '2028-12-01',
+        ],
+        [
+            'category'      => 'Produk Bayi',
+            'supplier'      => 'CV Sinar Mulia Trading',
+            'barcode'       => '8991000600021',
+            'name'          => 'Susu Formula BMT 400g',
+            'purchase_price'=> 85000,
+            'selling_price' => 98000,
+            'stock'         => 15,
+            'minimum_stock' => 5,
+            'expired_date'  => '2027-09-01',
+        ],
+
+        // === Kecantikan ===
+        [
+            'category'      => 'Kecantikan',
+            'supplier'      => 'CV Maju Jaya Sentosa',
+            'barcode'       => '8991000700011',
+            'name'          => 'Wardah Lightening Day Cream',
+            'purchase_price'=> 25000,
+            'selling_price' => 33000,
+            'stock'         => 20,
+            'minimum_stock' => 5,
+            'expired_date'  => '2028-03-01',
+        ],
+        [
+            'category'      => 'Kecantikan',
+            'supplier'      => 'CV Maju Jaya Sentosa',
+            'barcode'       => '8991000700021',
+            'name'          => 'Ponds Facial Foam 100ml',
+            'purchase_price'=> 18000,
+            'selling_price' => 24000,
+            'stock'         => 25,
+            'minimum_stock' => 5,
+            'expired_date'  => '2028-06-01',
+        ],
+
+        // === Obat & Kesehatan ===
+        [
+            'category'      => 'Obat & Kesehatan',
+            'supplier'      => 'CV Sinar Mulia Trading',
+            'barcode'       => '8991000800011',
+            'name'          => 'Paracetamol 500mg 10 Tablet',
+            'purchase_price'=> 3000,
+            'selling_price' => 5000,
+            'stock'         => 80,
+            'minimum_stock' => 20,
+            'expired_date'  => '2028-04-01',
+        ],
+        [
+            'category'      => 'Obat & Kesehatan',
+            'supplier'      => 'CV Sinar Mulia Trading',
+            'barcode'       => '8991000800021',
+            'name'          => 'Vitamin C IPI 50 Tablet',
+            'purchase_price'=> 5500,
+            'selling_price' => 8000,
+            'stock'         => 60,
+            'minimum_stock' => 15,
+            'expired_date'  => '2028-02-01',
+        ],
+    ];
+
     public function run(): void
     {
-        $makanan = Category::where('name', 'Makanan')->first();
-        $minuman = Category::where('name', 'Minuman')->first();
-        $sembako = Category::where('name', 'Sembako')->first();
-        $supplier1 = Supplier::where('name', 'PT Sumber Rezeki')->first();
-        $supplier2 = Supplier::where('name', 'CV Maju Jaya')->first();
+        foreach ($this->products as $product) {
+            $category = Category::where('name', $product['category'])->first();
+            $supplier = Supplier::where('name', $product['supplier'])->first();
 
-        Product::create([
-        'category_id' => $makanan->id,
-        'supplier_id' => $supplier1->id,
-        'barcode' => '899100000001',
-        'name' => 'Indomie Goreng',
-        'purchase_price' => 2500,
-        'selling_price' => 3500,
-        'stock' => 100,
-        'minimum_stock' => 10,
-        'expired_date' => '2027-12-31',
-        ]);
-
-        Product::create([
-            'category_id' => $minuman->id,
-            'supplier_id' => $supplier1->id,
-            'barcode' => '899100000002',
-            'name' => 'Aqua Botol 600ml',
-            'purchase_price' => 3000,
-            'selling_price' => 4000,
-            'stock' => 80,
-            'minimum_stock' => 10,
-            'expired_date' => '2027-10-20',
-        ]);
-
-        Product::create([
-            'category_id' => $sembako->id,
-            'supplier_id' => $supplier2->id,
-            'barcode' => '899100000003',
-            'name' => 'Beras Ramos 5Kg',
-            'purchase_price' => 65000,
-            'selling_price' => 75000,
-            'stock' => 30,
-            'minimum_stock' => 5,
-            'expired_date' => '2027-06-30',
-        ]);
+            Product::firstOrCreate(
+                ['barcode' => $product['barcode']],
+                [
+                    'category_id'    => $category?->id,
+                    'supplier_id'    => $supplier?->id,
+                    'name'           => $product['name'],
+                    'purchase_price' => $product['purchase_price'],
+                    'selling_price'  => $product['selling_price'],
+                    'stock'          => $product['stock'],
+                    'minimum_stock'  => $product['minimum_stock'],
+                    'expired_date'   => $product['expired_date'],
+                ]
+            );
+        }
     }
 }

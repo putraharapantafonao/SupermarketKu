@@ -6,7 +6,6 @@
     <title>Struk Pembayaran #{{ $transaction->invoice_number }}</title>
 
     <style>
-        /* Konfigurasi Kertas khusus Thermal Printer 58mm */
         @page {
             margin: 0;
         }
@@ -15,7 +14,7 @@
             font-family: 'Courier New', Courier, monospace;
             font-size: 11px;
             line-height: 1.4;
-            width: 80mm; /* Menyisakan ruang margin aman fisik kertas 58mm */
+            width: 80mm;
             margin: 0 auto;
             padding: 10px 2px;
             color: #000;
@@ -25,7 +24,6 @@
 
         .center { text-align: center; }
         .right { text-align: right; }
-        .justify { text-align: justify; }
 
         .line {
             border-top: 1px dashed #000;
@@ -65,7 +63,6 @@
             font-family: sans-serif;
         }
 
-        /* Menghilangkan elemen tombol saat print browser/mesin aktif */
         @media print {
             .btn-wrapper {
                 display: none;

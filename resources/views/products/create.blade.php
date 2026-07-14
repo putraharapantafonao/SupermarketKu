@@ -1,103 +1,52 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="space-y-1">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight"> Tambah Produk</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Masukkan data produk baru ke dalam sistem SupermarketKu</p>
-        </div>
+        <x-page-header title="Tambah Produk" subtitle="Masukkan data produk baru ke dalam sistem SupermarketKu" />
     </x-slot>
 
     <div class="p-4 sm:p-6 max-w-5xl mx-auto">
-        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm p-5 sm:p-6">
+        <x-card>
 
             <form action="{{ route('products.store') }}" method="POST" class="space-y-5">
                 @csrf
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <x-input-group label="Kategori" name="category_id" type="select" :error="$errors->first('category_id')" required>
+                        <option value="">-- Pilih Kategori --</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                        @endforeach
+                    </x-input-group>
 
-                    <div class="flex flex-col gap-1">
-                        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Kategori</label>
-                        <select name="category_id" class="w-full border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-blue-500 @error('category_id') border-red-500 focus:ring-red-500 @enderror">
-                            <option value="">-- Pilih Kategori --</option>
-                            @foreach ($categories as $category)
-                                <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('category_id') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
-                    </div>
+                    <x-input-group label="Supplier" name="supplier_id" type="select" :error="$errors->first('supplier_id')">
+                        <option value="">-- Pilih Supplier --</option>
+                        @foreach($suppliers as $supplier)
+                            <option value="{{ $supplier->id }}" {{ old('supplier_id') == $supplier->id ? 'selected' : '' }}>{{ $supplier->name }}</option>
+                        @endforeach
+                    </x-input-group>
 
-                    <div class="flex flex-col gap-1">
-                        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Supplier</label>
-                        <select name="supplier_id" class="w-full border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-blue-500 @error('supplier_id') border-red-500 focus:ring-red-500 @enderror">
-                            <option value="">-- Pilih Supplier --</option>
-                            @foreach ($suppliers as $supplier)
-                                <option value="{{ $supplier->id }}" {{ old('supplier_id') == $supplier->id ? 'selected' : '' }}>{{ $supplier->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('supplier_id') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
-                    </div>
+                    <x-input-group label="Barcode" name="barcode" type="text" :value="old('barcode')" :error="$errors->first('barcode')" placeholder="Scan atau ketik kode barcode..." />
 
-                    <div class="flex flex-col gap-1">
-                        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Barcode</label>
-                        <input type="text" name="barcode" value="{{ old('barcode') }}" placeholder="Scan atau ketik kode barcode..."
-                               class="w-full border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl text-sm font-mono focus:ring-2 focus:ring-blue-500 @error('barcode') border-red-500 focus:ring-red-500 @enderror">
-                        @error('barcode') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
-                    </div>
+                    <x-input-group label="Nama Produk" name="name" type="text" :value="old('name')" :error="$errors->first('name')" placeholder="Masukkan nama barang lengkap..." required />
 
-                    <div class="flex flex-col gap-1">
-                        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nama Produk</label>
-                        <input type="text" name="name" value="{{ old('name') }}" placeholder="Masukkan nama barang lengkap..."
-                               class="w-full border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-blue-500 @error('name') border-red-500 focus:ring-red-500 @enderror">
-                        @error('name') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
-                    </div>
+                    <x-input-group label="Harga Beli (Rp)" name="purchase_price" type="number" :value="old('purchase_price')" :error="$errors->first('purchase_price')" placeholder="Nominal modal awal..." />
 
-                    <div class="flex flex-col gap-1">
-                        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Harga Beli (Rp)</label>
-                        <input type="number" name="purchase_price" value="{{ old('purchase_price') }}" placeholder="Nominal modal awal..."
-                               class="w-full border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl text-sm font-mono focus:ring-2 focus:ring-blue-500 @error('purchase_price') border-red-500 focus:ring-red-500 @enderror">
-                        @error('purchase_price') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
-                    </div>
+                    <x-input-group label="Harga Jual (Rp)" name="selling_price" type="number" :value="old('selling_price')" :error="$errors->first('selling_price')" placeholder="Nominal harga ke kasir..." />
 
-                    <div class="flex flex-col gap-1">
-                        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Harga Jual (Rp)</label>
-                        <input type="number" name="selling_price" value="{{ old('selling_price') }}" placeholder="Nominal harga ke kasir..."
-                               class="w-full border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl text-sm font-mono focus:ring-2 focus:ring-blue-500 @error('selling_price') border-red-500 focus:ring-red-500 @enderror">
-                        @error('selling_price') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
-                    </div>
+                    <x-input-group label="Stok Awal" name="stock" type="number" :value="old('stock', 0)" :error="$errors->first('stock')" />
 
-                    <div class="flex flex-col gap-1">
-                        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Stok Awal</label>
-                        <input type="number" name="stock" value="{{ old('stock', 0) }}" min="0"
-                               class="w-full border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl text-sm font-mono focus:ring-2 focus:ring-blue-500 @error('stock') border-red-500 focus:ring-red-500 @enderror">
-                        @error('stock') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
-                    </div>
+                    <x-input-group label="Stok Minimum (Peringatan Restok)" name="minimum_stock" type="number" :value="old('minimum_stock', 5)" :error="$errors->first('minimum_stock')" />
 
-                    <div class="flex flex-col gap-1">
-                        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Stok Minimum (Peringatan Restok)</label>
-                        <input type="number" name="minimum_stock" value="{{ old('minimum_stock', 5) }}" min="0"
-                               class="w-full border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl text-sm font-mono focus:ring-2 focus:ring-blue-500 @error('minimum_stock') border-red-500 focus:ring-red-500 @enderror">
-                        @error('minimum_stock') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
-                    </div>
-
-                    <div class="flex flex-col gap-1 md:col-span-2">
-                        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tanggal Expired</label>
-                        <input type="date" name="expired_date" value="{{ old('expired_date') }}"
-                               class="w-full sm:w-1/2 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-blue-500 @error('expired_date') border-red-500 focus:ring-red-500 @enderror">
-                        @error('expired_date') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
+                    <div class="md:col-span-2">
+                        <x-input-group label="Tanggal Expired" name="expired_date" type="date" :value="old('expired_date')" :error="$errors->first('expired_date')" />
                     </div>
                 </div>
 
                 <div class="flex items-center gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-sm shadow-blue-500/10">
-                        Simpan Produk
-                    </button>
-
-                    <a href="{{ route('products.index') }}"
-                       class="bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 px-6 py-2.5 rounded-xl text-sm font-semibold transition-colors">
-                        Kembali
-                    </a>
+                    <x-button type="submit">Simpan Produk</x-button>
+                    <x-button variant="secondary" href="{{ route('products.index') }}">Kembali</x-button>
                 </div>
             </form>
 
-        </div>
+        </x-card>
     </div>
 </x-app-layout>

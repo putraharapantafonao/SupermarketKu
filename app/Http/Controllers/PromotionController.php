@@ -22,16 +22,25 @@ class PromotionController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'product_id' => 'nullable|exists:products,id',
             'type' => 'required|in:percent,nominal',
-            'value' => 'required|integer|min:1',
+            'value' => [
+                'required',
+                'numeric',
+                'min:1',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->type === 'percent' && $value > 100) {
+                        $fail('Nilai persen tidak boleh lebih dari 100');
+                    }
+                },
+            ],
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-        Promotion::create($request->all());
+        Promotion::create($validated);
 
         return redirect()->route('promotions.index')->with('success', 'Promo berhasil ditambahkan.');
     }
@@ -44,16 +53,25 @@ class PromotionController extends Controller
 
     public function update(Request $request, Promotion $promotion)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'product_id' => 'nullable|exists:products,id',
             'type' => 'required|in:percent,nominal',
-            'value' => 'required|integer|min:1',
+            'value' => [
+                'required',
+                'numeric',
+                'min:1',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->type === 'percent' && $value > 100) {
+                        $fail('Nilai persen tidak boleh lebih dari 100');
+                    }
+                },
+            ],
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-        $promotion->update($request->all());
+        $promotion->update($validated);
 
         return redirect()->route('promotions.index')->with('success', 'Promo berhasil diperbarui.');
     }

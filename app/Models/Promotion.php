@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Promotion extends Model
 {
+    use HasFactory;
     protected $fillable = [
     'name',
     'product_id',
@@ -14,6 +16,15 @@ class Promotion extends Model
     'start_date',
     'end_date',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'value' => 'integer',
+            'start_date' => 'date',
+            'end_date' => 'date',
+        ];
+    }
 
     public function product()
     {

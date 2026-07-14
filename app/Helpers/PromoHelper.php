@@ -11,20 +11,27 @@ class PromoHelper
     {
         $price = $product->selling_price;
 
-        $promo = Promotion::where(function ($query) use ($product) {
-                $query->where('product_id', $product->id)
-                      ->orWhereNull('product_id');
-            })
+        $promo = Promotion::where('product_id', $product->id)
             ->whereDate('start_date', '<=', now())
             ->whereDate('end_date', '>=', now())
             ->latest()
             ->first();
 
+        if (!$promo) {
+            $promo = Promotion::whereNull('product_id')
+                ->whereDate('start_date', '<=', now())
+                ->whereDate('end_date', '>=', now())
+                ->latest()
+                ->first();
+        }
+
         if ($promo) {
             if ($promo->type === 'percent') {
-                $price -= ($product->selling_price * $promo->value) / 100;
+                $discount = min($promo->value, 100);
+                $price -= ($product->selling_price * $discount) / 100;
             } else {
-                $price -= $promo->value;
+                $discount = min($promo->value, $price);
+                $price -= $discount;
             }
         }
 

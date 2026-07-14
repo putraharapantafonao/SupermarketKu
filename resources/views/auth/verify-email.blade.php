@@ -1,31 +1,28 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
-    </div>
+    <h1 class="text-xl font-bold text-gray-900 dark:text-white text-center mb-1">Verifikasi Email</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 text-center mb-6">Sebelum memulai, silakan verifikasi alamat email Anda dengan mengklik link yang kami kirimkan.</p>
 
     @if (session('status') == 'verification-link-sent')
-        <div class="mb-4 font-medium text-sm text-green-600">
-            {{ __('A new verification link has been sent to the email address you provided during registration.') }}
+        <div class="mb-4 text-sm text-green-600 text-center bg-green-50 dark:bg-green-900/20 rounded-xl px-4 py-3">
+            {{ __('Tautan verifikasi baru telah dikirim ke alamat email Anda.') }}
         </div>
     @endif
 
-    <div class="mt-4 flex items-center justify-between">
-        <form method="POST" action="{{ route('verification.send') }}">
-            @csrf
+    <form method="POST" action="{{ route('verification.send') }}" class="space-y-4">
+        @csrf
 
-            <div>
-                <x-primary-button>
-                    {{ __('Resend Verification Email') }}
-                </x-primary-button>
-            </div>
-        </form>
-
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-
-            <button type="submit" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                {{ __('Log Out') }}
+        <div>
+            <button type="submit"
+                    class="w-full bg-primary-600 hover:bg-primary-700 text-white rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors shadow-sm">
+                Kirim Ulang Email Verifikasi
             </button>
-        </form>
-    </div>
+        </div>
+    </form>
+
+    <form method="POST" action="{{ route('logout') }}" class="mt-4 text-center">
+        @csrf
+        <button type="submit" class="text-sm font-semibold text-primary-600 dark:text-primary-400 hover:underline">
+            Keluar
+        </button>
+    </form>
 </x-guest-layout>

@@ -30,12 +30,19 @@ class UserController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        User::create([
+        $data = [
             'name' => $request->name,
             'email' => $request->email,
             'role_id' => $request->role_id,
             'password' => Hash::make($request->password),
-        ]);
+        ];
+
+        // Only Owner can assign Owner role
+        if (auth()->user()->role->name !== 'Owner' && $data['role_id'] == Role::where('name', 'Owner')->value('id')) {
+            $data['role_id'] = Role::where('name', 'Kasir')->value('id');
+        }
+
+        User::create($data);
 
         return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan.');
     }
@@ -61,6 +68,12 @@ class UserController extends Controller
             'role_id' => $request->role_id,
         ];
 
+        // Only Owner can assign Owner role
+        $ownerRoleId = Role::where('name', 'Owner')->value('id');
+        if (auth()->user()->role->name !== 'Owner' && $data['role_id'] == $ownerRoleId) {
+            $data['role_id'] = $user->getOriginal('role_id');
+        }
+
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
@@ -74,6 +87,12 @@ class UserController extends Controller
     {
         if ($user->id === auth()->id()) {
             return back()->with('error', 'User yang sedang login tidak bisa dihapus.');
+        }
+
+        $adminRoleIds = Role::whereIn('name', ['Owner', 'Admin'])->pluck('id');
+        $adminCount = User::whereIn('role_id', $adminRoleIds)->count();
+        if ($adminCount <= 1 && $adminRoleIds->contains($user->role_id)) {
+            return back()->with('error', 'Tidak dapat menghapus Admin/Owner terakhir.');
         }
 
         $user->delete();

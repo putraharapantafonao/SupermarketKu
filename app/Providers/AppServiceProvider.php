@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,5 +27,10 @@ class AppServiceProvider extends ServiceProvider
                 return base_path('public');
             });
         }
+
+        Gate::define('view-reports', fn (User $user) => in_array($user->role?->name, ['Owner', 'Admin']));
+        Gate::define('manage-users', fn (User $user) => in_array($user->role?->name, ['Owner', 'Admin']));
+        Gate::define('manage-stock', fn (User $user) => in_array($user->role?->name, ['Owner', 'Admin', 'Gudang']));
+        Gate::define('manage-promotions', fn (User $user) => in_array($user->role?->name, ['Owner', 'Admin']));
     }
 }

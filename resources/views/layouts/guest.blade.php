@@ -14,16 +14,22 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
-            </div>
+    <body class="font-sans antialiased">
+        <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-950 px-4 py-8">
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+            <div class="w-full sm:max-w-md bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 sm:p-8 rounded-2xl shadow-xl transition-all">
+
+                <div class="flex flex-col items-center mb-6">
+                    <div class="w-16 h-16 bg-white dark:bg-gray-800 rounded-2xl flex items-center justify-center shadow-md border border-gray-100 dark:border-gray-700 p-2 mb-3">
+                        <img src="{{ asset('images/logo-supermarketku.png') }}" alt="SupermarketKu Logo" class="w-full h-full object-contain">
+                    </div>
+                    <h1 class="text-xl font-bold text-gray-900 dark:text-white text-center">SupermarketKu</h1>
+                </div>
+
                 {{ $slot }}
+
+                <p class="mt-6 text-center text-xs text-gray-400">SupermarketKu &mdash; Aplikasi Kasir Modern</p>
+
             </div>
         </div>
     </body>

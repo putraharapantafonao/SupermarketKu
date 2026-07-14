@@ -31,13 +31,17 @@ class PurchaseController extends Controller
 
     public function store(Request $request)
     {
+        $productIds = $request->input('product_id', []);
+        $quantities = $request->input('quantity', []);
+        $prices = $request->input('purchase_price', []);
+
         $request->validate([
             'supplier_id' => 'required|exists:suppliers,id',
             'product_id' => 'required|array',
             'product_id.*' => 'required|exists:products,id',
-            'quantity' => 'required|array',
+            'quantity' => 'required|array|size:' . count($productIds),
             'quantity.*' => 'required|integer|min:1',
-            'purchase_price' => 'required|array',
+            'purchase_price' => 'required|array|size:' . count($productIds),
             'purchase_price.*' => 'required|integer|min:0',
         ]);
 
@@ -55,8 +59,14 @@ class PurchaseController extends Controller
                 'total_price' => $totalPrice,
             ]);
 
+            $products = Product::whereIn('id', $request->product_id)->get()->keyBy('id');
+
             foreach ($request->product_id as $index => $productId) {
-                $product = Product::findOrFail($productId);
+                $product = $products->get($productId);
+                if (!$product) {
+                    throw new \Exception("Produk dengan ID {$productId} tidak ditemukan!");
+                }
+
                 $quantity = $request->quantity[$index];
                 $purchasePrice = $request->purchase_price[$index];
                 $subtotal = $quantity * $purchasePrice;

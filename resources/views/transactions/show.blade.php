@@ -1,8 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="space-y-1 no-print">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Detail Struk</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Invoice {{ $transaction->invoice_number }}</p>
+        <div class="no-print">
+            <x-page-header title="Detail Struk" subtitle="Invoice {{ $transaction->invoice_number }}" />
         </div>
     </x-slot>
 
@@ -21,28 +20,23 @@
                 <p><span class="font-medium text-gray-400">Tanggal:</span> <strong class="font-mono text-gray-900 dark:text-white">{{ $transaction->created_at->format('d-m-Y H:i') }}</strong></p>
             </div>
 
-            <div class="w-full overflow-x-auto rounded-xl border border-gray-100 dark:border-gray-800 shadow-inner">
-                <table class="w-full text-left border-collapse min-w-[450px]">
-                    <thead>
-                        <tr class="bg-gray-50 dark:bg-gray-800/60 text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-800">
-                            <th class="px-4 py-3 text-sm font-bold">Produk</th>
-                            <th class="px-4 py-3 text-sm font-bold text-center w-20">Qty</th>
-                            <th class="px-4 py-3 text-sm font-bold text-right w-36">Subtotal</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100 dark:divide-gray-800 text-gray-600 dark:text-gray-300">
-                        @foreach ($transaction->details as $detail)
-                            <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
-                                <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">{{ $detail->product->name }}</td>
-                                <td class="px-4 py-3 text-sm text-center font-mono font-semibold">{{ $detail->quantity }}</td>
-                                <td class="px-4 py-3 text-sm text-right font-mono font-semibold">
-                                    Rp {{ number_format($detail->subtotal, 0, ',', '.') }}
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+            <x-table min-width="450px">
+                <x-slot name="header">
+                    <th class="px-4 py-3 text-sm font-bold">Produk</th>
+                    <th class="px-4 py-3 text-sm font-bold text-center w-20">Qty</th>
+                    <th class="px-4 py-3 text-sm font-bold text-right w-36">Subtotal</th>
+                </x-slot>
+
+                @foreach ($transaction->details as $detail)
+                    <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
+                        <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">{{ $detail->product->name }}</td>
+                        <td class="px-4 py-3 text-sm text-center font-mono font-semibold">{{ $detail->quantity }}</td>
+                        <td class="px-4 py-3 text-sm text-right font-mono font-semibold">
+                            Rp {{ number_format($detail->subtotal, 0, ',', '.') }}
+                        </td>
+                    </tr>
+                @endforeach
+            </x-table>
 
             <div class="border-t border-gray-100 dark:border-gray-800 mt-5 pt-4 space-y-2.5 text-sm text-gray-600 dark:text-gray-400 font-medium">
                 <div class="flex justify-between">
@@ -66,7 +60,7 @@
 
                 <div class="flex justify-between items-center text-base font-bold text-gray-900 dark:text-white pt-2 border-t border-dashed border-gray-200 dark:border-gray-800">
                     <span>Grand Total</span>
-                    <span class="text-xl font-black text-blue-600 dark:text-blue-400 font-mono">
+                    <span class="text-xl font-black text-primary-600 dark:text-primary-400 font-mono">
                         Rp {{ number_format($transaction->grand_total, 0, ',', '.') }}
                     </span>
                 </div>
@@ -83,17 +77,9 @@
             </div>
 
             <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3 no-print">
+                <x-button variant="success" href="{{ route('transactions.receipt', $transaction->id) }}" size="default">Cetak Struk</x-button>
 
-                <a href="{{ route('transactions.receipt', $transaction->id) }}"
-                   target="_blank"
-                   class="text-center bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition-colors shadow-sm shadow-emerald-500/10 inline-flex items-center justify-center">
-                    Cetak Struk
-                </a>
-
-                <a href="{{ route('transactions.index') }}"
-                   class="text-center bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2.5 rounded-xl font-semibold text-sm transition-colors inline-flex items-center justify-center">
-                    Kembali
-                </a>
+                <x-button variant="secondary" href="{{ route('transactions.index') }}" size="default">Kembali</x-button>
             </div>
 
         </div>

@@ -12,9 +12,8 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $products = Product::with(['category', 'supplier'])
-            ->when($request->search, function ($query) use ($request) {
-                $query->where('name', 'like', '%' . $request->search . '%')
-                      ->orWhere('barcode', 'like', '%' . $request->search . '%');
+            ->when($request->filled('search') && strlen($request->search) >= 3, function ($query) use ($request) {
+                $query->whereFullText(['name', 'barcode'], $request->search, ['mode' => 'BOOLEAN']);
             })
             ->latest()
             ->paginate(10);
@@ -44,7 +43,19 @@ class ProductController extends Controller
             'expired_date' => 'nullable|date',
         ]);
 
-        Product::create($request->all());
+        $validated = $request->validate([
+            'category_id' => 'required|exists:categories,id',
+            'supplier_id' => 'nullable|exists:suppliers,id',
+            'barcode' => 'required|string|max:255|unique:products,barcode',
+            'name' => 'required|string|max:255',
+            'purchase_price' => 'required|integer|min:0',
+            'selling_price' => 'required|integer|min:0',
+            'stock' => 'required|integer|min:0',
+            'minimum_stock' => 'required|integer|min:0',
+            'expired_date' => 'nullable|date',
+        ]);
+
+        Product::create($validated);
 
         return redirect()->route('products.index')
             ->with('success', 'Produk berhasil ditambahkan.');
@@ -66,13 +77,25 @@ class ProductController extends Controller
             'barcode' => 'required|string|max:255|unique:products,barcode,' . $product->id,
             'name' => 'required|string|max:255',
             'purchase_price' => 'required|integer|min:0',
-            'selling_price' => 'required|integer|min:0',
+            'selling_price' => 'required|integer|min:0|gte:purchase_price',
             'stock' => 'required|integer|min:0',
             'minimum_stock' => 'required|integer|min:0',
             'expired_date' => 'nullable|date',
         ]);
 
-        $product->update($request->all());
+        $validated = $request->validate([
+            'category_id' => 'required|exists:categories,id',
+            'supplier_id' => 'nullable|exists:suppliers,id',
+            'barcode' => 'required|string|max:255|unique:products,barcode,' . $product->id,
+            'name' => 'required|string|max:255',
+            'purchase_price' => 'required|integer|min:0',
+            'selling_price' => 'required|integer|min:0|gte:purchase_price',
+            'stock' => 'required|integer|min:0',
+            'minimum_stock' => 'required|integer|min:0',
+            'expired_date' => 'nullable|date',
+        ]);
+
+        $product->update($validated);
 
         return redirect()->route('products.index')
             ->with('success', 'Produk berhasil diperbarui.');

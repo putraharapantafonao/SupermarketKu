@@ -17,6 +17,14 @@ class SalesReportExport implements FromCollection, WithHeadings
         $this->end = $end;
     }
 
+    private function sanitizeCell($value)
+    {
+        if (is_string($value) && strlen($value) > 0 && in_array($value[0], ['=', '+', '-', '@'])) {
+            return "'" . $value;
+        }
+        return $value;
+    }
+
     public function collection()
     {
         return Transaction::with(['user', 'customer'])
@@ -25,9 +33,9 @@ class SalesReportExport implements FromCollection, WithHeadings
             ->get()
             ->map(function ($transaction) {
                 return [
-                    'invoice' => $transaction->invoice_number,
-                    'kasir' => $transaction->user->name,
-                    'pelanggan' => $transaction->customer->name ?? 'Umum',
+                    'invoice' => $this->sanitizeCell($transaction->invoice_number),
+                    'kasir' => $this->sanitizeCell($transaction->user->name),
+                    'pelanggan' => $this->sanitizeCell($transaction->customer->name ?? 'Umum'),
                     'tanggal' => $transaction->created_at->format('d-m-Y H:i'),
                     'total' => $transaction->grand_total,
                 ];

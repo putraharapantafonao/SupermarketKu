@@ -2,21 +2,29 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Category;
+use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+    protected array $categories = [
+        ['name' => 'Makanan',               'description' => 'Makanan ringan, basah, dan siap saji'],
+        ['name' => 'Minuman',                'description' => 'Minuman ringan, dingin, dan panas'],
+        ['name' => 'Sembako',                'description' => 'Kebutuhan pokok: beras, minyak, gula, dll'],
+        ['name' => 'Bumbu Masakan',          'description' => 'Bumbu instan, saus, kecap, penyedap rasa'],
+        ['name' => 'Peralatan Rumah Tangga', 'description' => 'Sabun, deterjen, tisu, pel, dll'],
+        ['name' => 'Produk Bayi',            'description' => 'Popok, susu, makanan bayi'],
+        ['name' => 'Kecantikan',             'description' => 'Perawatan kulit, riasan, parfum'],
+        ['name' => 'Obat & Kesehatan',       'description' => 'Vitamin, obat bebas, alat kesehatan'],
+    ];
+
     public function run(): void
     {
-        Category::create(['name' => 'Makanan', 'description' => 'Produk makanan ringan dan berat']);
-        Category::create(['name' => 'Minuman', 'description' => 'Produk minuman']);
-        Category::create(['name' => 'Sembako', 'description' => 'Kebutuhan pokok']);
-        Category::create(['name' => 'Peralatan Rumah Tangga', 'description' => 'Kebutuhan rumah tangga']);
-        Category::create(['name' => 'Kosmetik', 'description' => 'Produk kecantikan dan perawatan']);
+        foreach ($this->categories as $category) {
+            Category::firstOrCreate(
+                ['name' => $category['name']],
+                $category
+            );
+        }
     }
 }

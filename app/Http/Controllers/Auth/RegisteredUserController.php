@@ -46,10 +46,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        if ($request->role_id == 2) { // Sesuaikan angka 2 dengan ID Kasir di database Kamu
-            return redirect()->route('pos.index');
-        }
-
         return redirect(route('dashboard', absolute: false));
-        }
+    }
 }

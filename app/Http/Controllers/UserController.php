@@ -23,11 +23,12 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        // 💡 PERBAIKAN: Menambahkan 'confirmed' agar password wajib cocok dengan password_confirmation
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'role_id' => 'required|exists:roles,id',
-            'password' => 'required|min:6',
+            'password' => 'required|min:8|confirmed',
         ]);
 
         $data = [
@@ -37,8 +38,9 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
         ];
 
-        // Only Owner can assign Owner role
-        if (auth()->user()->role->name !== 'Owner' && $data['role_id'] == Role::where('name', 'Owner')->value('id')) {
+        // Proteksi Keamanan: Hanya Owner yang boleh mendaftarkan Owner baru
+        $ownerRole = Role::where('name', 'Owner')->first();
+        if (auth()->user()->role->name !== 'Owner' && $data['role_id'] == $ownerRole?->id) {
             $data['role_id'] = Role::where('name', 'Kasir')->value('id');
         }
 
@@ -55,11 +57,12 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        // 💡 PERBAIKAN: Menambahkan 'confirmed' jika password diisi
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'role_id' => 'required|exists:roles,id',
-            'password' => 'nullable|min:6',
+            'password' => 'nullable|min:8|confirmed',
         ]);
 
         $data = [
@@ -68,9 +71,9 @@ class UserController extends Controller
             'role_id' => $request->role_id,
         ];
 
-        // Only Owner can assign Owner role
-        $ownerRoleId = Role::where('name', 'Owner')->value('id');
-        if (auth()->user()->role->name !== 'Owner' && $data['role_id'] == $ownerRoleId) {
+        // Proteksi Keamanan: Non-Owner tidak boleh mengubah akun lain menjadi Owner
+        $ownerRole = Role::where('name', 'Owner')->first();
+        if (auth()->user()->role->name !== 'Owner' && $data['role_id'] == $ownerRole?->id) {
             $data['role_id'] = $user->getOriginal('role_id');
         }
 

@@ -14,9 +14,11 @@
 
                 <x-input-group label="Alamat Email (Username)" name="email" type="email" :value="old('email', $user->email)" :error="$errors->first('email')" placeholder="Contoh: kasir1@supermarketku.com..." required />
 
-                <x-input-group label="Hak Akses Sistem (Role)" name="role" type="select">
-                    <option value="cashier" {{ old('role', $user->role) == 'cashier' ? 'selected' : '' }}>Kasir / Petugas Toko</option>
-                    <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Administrator Sistem</option>
+                <x-input-group label="Hak Akses Sistem (Role)" name="role_id" type="select">
+                    <option value="1" {{ old('role_id', $user->role_id) == 1 ? 'selected' : '' }}>Owner</option>
+                    <option value="2" {{ old('role_id', $user->role_id) == 2 ? 'selected' : '' }}>Admin</option>
+                    <option value="3" {{ old('role_id', $user->role_id) == 3 ? 'selected' : '' }}>Kasir</option>
+                    <option value="4" {{ old('role_id', $user->role_id) == 4 ? 'selected' : '' }}>Gudang</option>
                 </x-input-group>
 
                 <div class="bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 p-3.5 rounded-xl text-xs text-blue-700 dark:text-blue-400 leading-relaxed">

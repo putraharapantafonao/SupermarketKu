@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+// 💡 PENTING: Memastikan properti mass assignment mengizinkan role_id, name, email, dan password
 #[Fillable(['name', 'email', 'password', 'role_id'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
@@ -30,16 +31,25 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Relasi ke model Role (Banyak User memiliki satu Role)
+     */
     public function role()
     {
         return $this->belongsTo(Role::class);
     }
 
+    /**
+     * Relasi ke model Transaction (Kasir/Owner mencatat banyak transaksi)
+     */
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
     }
 
+    /**
+     * Relasi ke model Purchase (Staf logistik/Owner mencatat banyak pembelian stok)
+     */
     public function purchases()
     {
         return $this->hasMany(Purchase::class);

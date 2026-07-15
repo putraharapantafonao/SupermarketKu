@@ -13,9 +13,11 @@
 
                 <x-input-group label="Alamat Email (Username)" name="email" type="email" :value="old('email')" :error="$errors->first('email')" placeholder="Contoh: kasir1@supermarketku.com..." required />
 
-                <x-input-group label="Hak Akses Sistem (Role)" name="role" type="select">
-                    <option value="cashier" {{ old('role') == 'cashier' ? 'selected' : '' }}>Kasir</option>
-                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                <x-input-group label="Hak Akses Sistem (Role)" name="role_id" type="select">
+                    <option value="1" {{ old('role_id') == 1 ? 'selected' : '' }}>Owner</option>
+                    <option value="2" {{ old('role_id') == 2 ? 'selected' : '' }}>Admin</option>
+                    <option value="3" {{ old('role_id') == 3 ? 'selected' : '' }}>Kasir</option>
+                    <option value="4" {{ old('role_id') == 4 ? 'selected' : '' }}>Gudang</option>
                 </x-input-group>
 
                 <x-input-group label="Password Akun" name="password" type="password" :error="$errors->first('password')" placeholder="Minimal 8 karakter unik..." required />

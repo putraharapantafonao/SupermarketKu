@@ -39,22 +39,25 @@ SupermarketKu adalah aplikasi web Point of Sale (POS) dan manajemen toko retail 
 
 Aplikasi ini memiliki sistem role-based access control dengan pembagian akses sebagai berikut:
 
-1. Owner / Pemilik Toko
-   - Mengelola seluruh data master.
-   - Memantau dashboard dan laporan penjualan.
-   - Mengakses fitur penuh aplikasi.
+1. **Owner / Pemilik Toko**
+   - Mengelola seluruh data master.
+   - Memantau dashboard dan laporan penjualan.
+   - Mengakses fitur penuh aplikasi.
 
-2. Admin
-   - Mengelola produk, kategori, supplier, dan akun pengguna tertentu.
-   - Mengakses laporan serta fitur operasional inti.
+2. **Kasir**
+   - Mengakses halaman POS dan transaksi penjualan.
+   - Melakukan checkout, mencetak nota, dan melihat riwayat transaksi.
 
-3. Kasir
-   - Mengakses halaman POS dan transaksi penjualan.
-   - Melakukan checkout, mencetak nota, dan melihat riwayat transaksi.
+---
 
-4. Gudang / Logistik
-   - Mengelola pembelian stok, stock opname, dan stock movement.
-   - Memantau kondisi stok minimum.
+## 🔑 Akun Default / Credentials Demo
+
+Gunakan akun berikut untuk menguji aplikasi sesuai dengan peran masing-masing:
+
+| Peran (Role) | Email | Password |
+| :--- | :--- | :--- |
+| **Owner** | `owner@supermarketku.com` | `password` |
+| **Kasir** | `kasir@supermarketku.com` | `password` |
 
 ---
 
